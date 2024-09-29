@@ -70,6 +70,32 @@ combo_PARA['values'] = moedas
 
 app_entry = Entry(frame_conteudo, justify='center', width=30, font='ivy 10 bold', relief='solid')
 app_entry.place(relx=0.5, rely=0.7, anchor='center')
+
+# Função para fazer a requisição à API de conversão de moedas
+def converter():
+    from_currency = combo_DE.get() 
+    to_currency = combo_PARA.get()  
+    amount = app_entry.get()        
+
+    if from_currency and to_currency and amount:
+        try:
+            url = f"https://economia.awesomeapi.com.br/json/last/{from_currency}-{to_currency}"
+
+            response = requests.get(url)
+            dados = response.json()
+
+            conversion_key = f"{from_currency}{to_currency}"
+            if response.status_code == 200 and conversion_key in dados:
+                rate = float(dados[conversion_key]['bid'])
+                conversion_result = rate * float(amount)
+                app_moeda['text'] = f'{amount} {from_currency} = {conversion_result:.2f} {to_currency}'
+            else:
+                app_moeda['text'] = "Erro na conversão!"
+        except Exception as e:
+            app_moeda['text'] = "Erro de conexão!"
+    else:
+        app_moeda['text'] = "Preencha todos os campos!"
+
 botao_converter = Button(frame_conteudo, width=26, height=1, text='Converter', relief='raised', overrelief='solid', anchor='center', bg=cor3, fg=cor1, font='ivy 10 bold', command=converter)
 botao_converter.place(relx=0.5, rely=0.9, anchor='center')
 
