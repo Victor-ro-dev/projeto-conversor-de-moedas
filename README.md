@@ -1,17 +1,17 @@
 # Projeto: Conversor de Moedas
 
-Este projeto é um script em Python que utiliza a biblioteca **Tkinter** para criar uma interface gráfica de usuário (GUI) e consome dados de uma API para realizar conversões entre diferentes moedas.
+Este projeto é um script em Python que utiliza a biblioteca **CustomTkinter** para criar uma interface gráfica de usuário (GUI) e consome dados de uma API para realizar conversões entre diferentes moedas.
 
 ## Funcionalidades
 
 - Converte valores de uma moeda para outra utilizando uma API de taxas de câmbio em tempo real.
-- Interface amigável para o usuário, construída com **Tkinter**.
+- Interface amigável para o usuário, construída com **CustomTkinter**.
 - Exibe o valor convertido com base nas taxas de câmbio mais recentes.
 
 ## Tecnologias Usadas
 
 🔹 **Python**  
-🔹 **Tkinter** para a GUI
+🔹 **CustomTkinter** para a GUI
 
 ## API Utilizada
 
