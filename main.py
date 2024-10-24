@@ -1,6 +1,5 @@
 import requests
-from tkinter import *
-from tkinter import ttk
+import customtkinter as ctk
 from PIL import ImageTk, Image
 
 # --------------- Configs básicas ------------- #
@@ -12,30 +11,27 @@ cor4 = "#eb463b"  # Vermelha
 cor5 = "#dedcdc"  # Cinza
 cor6 = "#3080f0"  # Azul
 
-janela = Tk()
+# Configurações da janela principal
+ctk.set_appearance_mode("light")
+ctk.set_default_color_theme("blue")
+
+janela = ctk.CTk()
 janela.geometry("300x350")
-janela.config(bg=cor2)
+janela.title("Conversor de Moeda")
 janela.resizable(width=False, height=False)
 
 # --------------- Cabeçalho ------------- #
-frame_cima = Frame(janela, width=300, height=60, bg=cor3, padx=0, pady=0, relief='flat')
-frame_cima.grid(row=0, column=0, sticky=NSEW)
+frame_cima = ctk.CTkFrame(janela, width=300, height=60, fg_color=cor6)
+frame_cima.grid(row=0, column=0, sticky="nsew")
 
-app_nome = Label(frame_cima, width=20, height=1, text='Conversor de moeda', padx=0, relief='flat', anchor='nw', font='ivy 16 bold', bg=cor3, fg=cor1)
-app_nome.place(relx=0.6, rely=0.5, anchor='center')
-
-img = Image.open('imagens/conversor.png')
-img = img.resize((30, 30), Image.LANCZOS)
-img = ImageTk.PhotoImage(img)
-
-app_logo = Label(frame_cima, height=30, image=img, compound=LEFT, padx=10, relief='flat', anchor='nw', bg=cor3)
-app_logo.place(x=5, y=13)
+app_nome = ctk.CTkLabel(frame_cima, text='Conversor de Moeda', font=ctk.CTkFont(size=16, weight="bold"), text_color=cor1)
+app_nome.place(relx=0.5, rely=0.5, anchor='center')
 
 # --------------- Conteúdo ------------- #
-frame_conteudo = Frame(janela, width=300, height=290, bg=cor5, padx=0, pady=0, relief='flat')
-frame_conteudo.grid(row=1, column=0, sticky=NSEW)
+frame_conteudo = ctk.CTkFrame(janela, width=300, height=290, fg_color=cor5)
+frame_conteudo.grid(row=1, column=0, sticky="nsew")
 
-app_moeda = Label(frame_conteudo, width=26, height=4, text='Escolha uma conversão!', relief='solid', anchor='center', bg=cor2, fg=cor1, font='ivy 10 bold')
+app_moeda = ctk.CTkLabel(frame_conteudo, text='Escolha uma conversão!', text_color=cor1, fg_color=cor2, width=200, height=50, corner_radius=6, font=ctk.CTkFont(size=10, weight="bold"))
 app_moeda.place(relx=0.5, rely=0.2, anchor='center')
 
 moedas = [
@@ -53,29 +49,26 @@ moedas = [
     "KRW",  # Won Sul-Coreano
 ]
 
-
-app_texto_DE = Label(frame_conteudo, text='De', width=8, height=1, relief='flat', font='ivy 10 bold', bg=cor5)
+app_texto_DE = ctk.CTkLabel(frame_conteudo, text='De', font=ctk.CTkFont(size=10, weight="bold"))
 app_texto_DE.place(relx=0.29, rely=0.4, anchor='ne')
 
-combo_DE = ttk.Combobox(frame_conteudo, width=8, justify=CENTER, font=('Ivy 12 bold'))
+combo_DE = ctk.CTkComboBox(frame_conteudo, values=moedas, width=100)
 combo_DE.place(relx=0.45, rely=0.5, anchor='ne')
-combo_DE['values'] = moedas
 
-app_texto_PARA = Label(frame_conteudo, text='Para', width=8, height=1, relief='flat', font='ivy 10 bold', bg=cor5)
+app_texto_PARA = ctk.CTkLabel(frame_conteudo, text='Para', font=ctk.CTkFont(size=10, weight="bold"))
 app_texto_PARA.place(relx=0.7, rely=0.4, anchor='ne')
 
-combo_PARA = ttk.Combobox(frame_conteudo, width=8, justify=CENTER, font=('Ivy 12 bold'))
+combo_PARA = ctk.CTkComboBox(frame_conteudo, values=moedas, width=100)
 combo_PARA.place(relx=0.84, rely=0.5, anchor='ne')
-combo_PARA['values'] = moedas
 
-app_entry = Entry(frame_conteudo, justify='center', width=30, font='ivy 10 bold', relief='solid')
+app_entry = ctk.CTkEntry(frame_conteudo, width=200, justify='center', font=ctk.CTkFont(size=10, weight="bold"))
 app_entry.place(relx=0.5, rely=0.7, anchor='center')
 
 # Função para fazer a requisição à API de conversão de moedas
 def converter():
-    from_currency = combo_DE.get() 
-    to_currency = combo_PARA.get()  
-    amount = app_entry.get()        
+    from_currency = combo_DE.get()
+    to_currency = combo_PARA.get()
+    amount = app_entry.get()
 
     if from_currency and to_currency and amount:
         try:
@@ -88,17 +81,15 @@ def converter():
             if response.status_code == 200 and conversion_key in dados:
                 rate = float(dados[conversion_key]['bid'])
                 conversion_result = rate * float(amount)
-                app_moeda['text'] = f'{amount} {from_currency} = {conversion_result:.2f} {to_currency}'
+                app_moeda.configure(text=f'{amount} {from_currency} = {conversion_result:.2f} {to_currency}')
             else:
-                app_moeda['text'] = "Erro na conversão!"
+                app_moeda.configure(text="Erro na conversão!")
         except Exception as e:
-            app_moeda['text'] = "Erro de conexão!"
+            app_moeda.configure(text="Erro de conexão!")
     else:
-        app_moeda['text'] = "Preencha todos os campos!"
+        app_moeda.configure(text="Preencha todos os campos!")
 
-botao_converter = Button(frame_conteudo, width=26, height=1, text='Converter', relief='raised', overrelief='solid', anchor='center', bg=cor3, fg=cor1, font='ivy 10 bold', command=converter)
+botao_converter = ctk.CTkButton(frame_conteudo, text='Converter', command=converter, width=200)
 botao_converter.place(relx=0.5, rely=0.9, anchor='center')
 
-estilo = ttk.Style(janela)
-estilo.theme_use('clam')
 janela.mainloop()
